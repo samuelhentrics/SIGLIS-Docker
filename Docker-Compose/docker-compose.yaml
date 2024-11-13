@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  react:
+    image: mon-projet-react
+    restart: always
+    networks:
+      - network-project
+  db:
+    image: mongo
+    environment:
+     MONGO_INITDB_ROOT_USERNAME: mongouser
+     MONGO_INITDB_ROOT_PASSWORD: mongopassword
+    ports:
+      - "27016:27017" 
+    networks:
+      - network-project
+  api:
+    depends_on:
+      - db
+    image: mon-projet-api
+    restart: always
+    networks:
+      - network-project
+
+  reverseproxy:
+    ports:
+      - "80:80" 
+    image: mon-projet-reverseproxy
+    restart: always
+    networks:
+      - network-project
+
+networks:
+  network-project:  
+    external: true
